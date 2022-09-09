@@ -2,17 +2,11 @@ package com.test.movie.integration;
 
 import com.test.movie.TestConfig;
 import com.test.movie.controller.MovieController;
-import com.test.movie.dto.MovieDto;
 import com.test.movie.model.Movie;
 import com.test.movie.repository.MovieRepository;
-import com.test.movie.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -46,10 +40,8 @@ public class MovieControllerIntTest {
     public void shouldReturnListMovies() throws Exception {
         var movie1 = new Movie(1, "Ironman", "Favro");
         var movie2 = new Movie(2, "Ugly 8", "Tarantino");
-        var expectedList =
-                List.of(new Movie(1, "Ironman", "Favro"),
-                        new Movie(2, "Ugly 8", "Tarantino"));
-        when(movieRepository.findAll(isA(Pageable.class))).thenReturn(new PageImpl<Movie>(expectedList));
+        var expectedList = List.of(movie1, movie2);
+        when(movieRepository.findAll(isA(Pageable.class))).thenReturn(new PageImpl<>(expectedList));
         var params = new LinkedMultiValueMap<String, String>();
         params.put("pageNumber", List.of("1"));
         params.put("pageSize", List.of("2"));
@@ -88,7 +80,6 @@ public class MovieControllerIntTest {
 
     @Test
     public void shouldReturnMovieWhenCreateMovie() throws Exception {
-        var movieDto = new MovieDto();
         var expectedResult = new Movie(1, "Ironman", "Favro");
 
         when(movieRepository.saveAndFlush(isA(Movie.class))).thenReturn(expectedResult);
@@ -106,7 +97,6 @@ public class MovieControllerIntTest {
 
     @Test
     public void shouldReturnMovieWhenUpdateMovie() throws Exception {
-        var movieDto = new MovieDto();
         var expectedResult = new Movie(1, "Ironman", "Favro");
 
         when(movieRepository.saveAndFlush(isA(Movie.class))).thenReturn(expectedResult);

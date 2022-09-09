@@ -46,7 +46,7 @@ public class OrderControllerIntTest {
         params.put("pageNumber", List.of("1"));
         params.put("pageSize", List.of("2"));
 
-        when(orderRepository.findAll(isA(Pageable.class))).thenReturn(new PageImpl<Order>(expectedResult));
+        when(orderRepository.findAll(isA(Pageable.class))).thenReturn(new PageImpl<>(expectedResult));
 
         var result =
                 mockMvc.perform(get("/order").params(params)).andExpect(status().isOk()).andReturn();

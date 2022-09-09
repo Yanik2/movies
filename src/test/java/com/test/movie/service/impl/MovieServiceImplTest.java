@@ -51,7 +51,7 @@ public class MovieServiceImplTest {
         params.put("pageNumber", "1");
         params.put("pageSize", "3");
         var expectedResult = List.of(new Movie());
-        var page = new PageImpl<Movie>(expectedResult);
+        var page = new PageImpl<>(expectedResult);
 
         when(movieRepositoryMock.findAll(isA(Pageable.class))).thenReturn(page);
 

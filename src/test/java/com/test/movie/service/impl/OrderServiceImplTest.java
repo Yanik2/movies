@@ -7,13 +7,11 @@ import com.test.movie.model.Order;
 import com.test.movie.repository.MovieRepository;
 import com.test.movie.repository.OrderRepository;
 import com.test.movie.service.OrderService;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.OneToMany;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +41,7 @@ public class OrderServiceImplTest {
         params.put("pageNumber", "1");
         params.put("pageSize", "3");
         var expectedResult = List.of(new Order());
-        var page = new PageImpl<Order>(expectedResult);
+        var page = new PageImpl<>(expectedResult);
 
         when(orderRepositoryMock.findAll(isA(Pageable.class))).thenReturn(page);
 
