@@ -23,8 +23,10 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Order> findAllOrders(@RequestParam Map<String, String> params) {
-        return orderService.findAllOrders(params);
+    public List<Order> findAllOrders(@RequestParam(required = false) String search,
+                                     @RequestParam Integer pageNumber,
+                                     @RequestParam Integer pageSize) {
+        return orderService.findAllOrders(search, pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")

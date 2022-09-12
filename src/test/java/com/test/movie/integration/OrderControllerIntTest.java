@@ -3,13 +3,14 @@ package com.test.movie.integration;
 import com.test.movie.TestConfig;
 import com.test.movie.model.Movie;
 import com.test.movie.model.Order;
-import com.test.movie.repository.MovieRepository;
-import com.test.movie.repository.OrderRepository;
+import com.test.movie.dao.MovieRepository;
+import com.test.movie.dao.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,6 +51,26 @@ public class OrderControllerIntTest {
 
         var result =
                 mockMvc.perform(get("/order").params(params)).andExpect(status().isOk()).andReturn();
+        var response = result.getResponse().getContentAsString();
+
+        assertTrue(response.contains("Ironman"));
+        assertTrue(response.contains("Favro"));
+    }
+
+    @Test
+    public void shouldReturnListOrdersWithSearch() throws Exception {
+        var movie = new Movie(1, "Ironman", "Favro");
+        var expectedResult = List.of(new Order(movie, "time1"), new Order(movie, "time2"));
+        var params = new LinkedMultiValueMap<String, String>();
+        params.put("search", List.of("movie:5"));
+        params.put("pageNumber", List.of("1"));
+        params.put("pageSize", List.of("2"));
+
+        when(orderRepository.findAll(isA(Specification.class), isA(Pageable.class)))
+            .thenReturn(new PageImpl<>(expectedResult));
+
+        var result =
+            mockMvc.perform(get("/order").params(params)).andExpect(status().isOk()).andReturn();
         var response = result.getResponse().getContentAsString();
 
         assertTrue(response.contains("Ironman"));

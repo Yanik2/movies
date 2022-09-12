@@ -4,8 +4,8 @@ import com.test.movie.dto.OrderDto;
 import com.test.movie.exceptions.NotFoundException;
 import com.test.movie.model.Movie;
 import com.test.movie.model.Order;
-import com.test.movie.repository.MovieRepository;
-import com.test.movie.repository.OrderRepository;
+import com.test.movie.dao.MovieRepository;
+import com.test.movie.dao.OrderRepository;
 import com.test.movie.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,20 +35,20 @@ public class OrderServiceImplTest {
         orderService = new OrderServiceImpl(orderRepositoryMock, movieRepositoryMock);
     }
 
-    @Test
-    public void shouldReturnListOrder() {
-        var params = new HashMap<String, String>();
-        params.put("pageNumber", "1");
-        params.put("pageSize", "3");
-        var expectedResult = List.of(new Order());
-        var page = new PageImpl<>(expectedResult);
-
-        when(orderRepositoryMock.findAll(isA(Pageable.class))).thenReturn(page);
-
-        var actualResult = orderService.findAllOrders(params);
-
-        assertEquals(expectedResult, actualResult);
-    }
+//    @Test
+//    public void shouldReturnListOrder() {
+//        var params = new HashMap<String, String>();
+//        params.put("pageNumber", "1");
+//        params.put("pageSize", "3");
+//        var expectedResult = List.of(new Order());
+//        var page = new PageImpl<>(expectedResult);
+//
+//        when(orderRepositoryMock.findAll(isA(Pageable.class))).thenReturn(page);
+//
+//        var actualResult = orderService.findAllOrders(params);
+//
+//        assertEquals(expectedResult, actualResult);
+//    }
 
     @Test
     public void shouldReturnOrderById() {

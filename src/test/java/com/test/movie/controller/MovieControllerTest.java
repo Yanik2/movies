@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
@@ -25,11 +23,11 @@ public class MovieControllerTest {
 
     @Test
     public void shouldCallMovieServiceAllMovies() {
-        var params = new HashMap<String, String>();
+        var search = "search";
 
-        movieController.getMovies(params);
+        movieController.getMovies(search, 1, 2);
 
-        verify(movieServiceMock).findAllMovies(params);
+        verify(movieServiceMock).findAllMovies(search, 1, 2);
     }
 
     @Test

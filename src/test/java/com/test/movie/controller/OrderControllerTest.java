@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
@@ -24,11 +22,11 @@ public class OrderControllerTest {
 
     @Test
     public void shouldCallOrderServiceFindAll() {
-        var params = new HashMap<String, String>();
+        var search = "search";
 
-        orderController.findAllOrders(params);
+        orderController.findAllOrders(search, 1, 2);
 
-        verify(orderServiceMock).findAllOrders(params);
+        verify(orderServiceMock).findAllOrders(search, 1, 2);
     }
 
     @Test

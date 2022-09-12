@@ -22,9 +22,16 @@ public class MovieController {
         this.movieService = movieService;
     }
 
+//    @GetMapping
+//    public List<Movie> getMovies(@RequestParam Map<String, String> params) {
+//        return movieService.findAllMovies(params);
+//    }
+
     @GetMapping
-    public List<Movie> getMovies(@RequestParam Map<String, String> params) {
-        return movieService.findAllMovies(params);
+    public List<Movie> getMovies(@RequestParam(required = false) String search,
+                                 @RequestParam Integer pageNumber,
+                                 @RequestParam Integer pageSize) {
+        return movieService.findAllMovies(search, pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
@@ -44,7 +51,7 @@ public class MovieController {
 
     @DeleteMapping("/{id}")
     public Integer deleteMovie(@PathVariable Integer id) {
-       return movieService.deleteMovie(id);
+        return movieService.deleteMovie(id);
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)

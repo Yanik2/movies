@@ -3,12 +3,13 @@ package com.test.movie.integration;
 import com.test.movie.TestConfig;
 import com.test.movie.controller.MovieController;
 import com.test.movie.model.Movie;
-import com.test.movie.repository.MovieRepository;
+import com.test.movie.dao.MovieRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,6 +50,28 @@ public class MovieControllerIntTest {
         var result = mockMvc
                 .perform(get("/movies").params(params))
                 .andExpect(status().isOk()).andReturn();
+
+        var response = result.getResponse().getContentAsString();
+
+        assertTrue(response.contains("Ironman"));
+        assertTrue(response.contains("Ugly 8"));
+    }
+
+    @Test
+    public void shouldReturnListMoviesWithSearch() throws Exception {
+        var movie1 = new Movie(1, "Ironman", "Favro");
+        var movie2 = new Movie(2, "Ugly 8", "Tarantino");
+        var expectedList = List.of(movie1, movie2);
+        when(movieRepository.findAll(isA(Specification.class), isA(Pageable.class))).thenReturn(new PageImpl<>(expectedList));
+
+        var params = new LinkedMultiValueMap<String, String>();
+        params.put("search", List.of("director:Favro"));
+        params.put("pageNumber", List.of("1"));
+        params.put("pageSize", List.of("2"));
+
+        var result = mockMvc
+            .perform(get("/movies").params(params))
+            .andExpect(status().isOk()).andReturn();
 
         var response = result.getResponse().getContentAsString();
 

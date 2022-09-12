@@ -1,15 +1,21 @@
 package com.test.movie.service.impl;
 
+import com.test.movie.dao.MovieSpecification;
+import com.test.movie.dao.OrderSpecification;
 import com.test.movie.dto.OrderDto;
 import com.test.movie.exceptions.NotFoundException;
 import com.test.movie.model.Movie;
 import com.test.movie.model.Order;
-import com.test.movie.repository.MovieRepository;
-import com.test.movie.repository.OrderRepository;
+import com.test.movie.dao.MovieRepository;
+import com.test.movie.dao.OrderRepository;
 import com.test.movie.service.OrderService;
+import com.test.movie.util.SearchCriteria;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +34,19 @@ public class OrderServiceImpl implements OrderService {
         this.movieRepository = movieRepository;
     }
 
-    public List<Order> findAllOrders(Map<String, String> map) {
-        Integer pageNumber = Integer.parseInt(map.get("pageNumber"));
-        Integer pageSize = Integer.parseInt(map.get("pageSize"));
-        Pageable page = PageRequest.of(pageNumber, pageSize);
-        Page<Order> orders = orderRepository.findAll(page);
-        return orders.getContent();
+    @Override
+    public List<Order> findAllOrders(String search, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        if(search == null)
+            return orderRepository.findAll(pageable).getContent();
+
+        SearchCriteria searchCriteria;
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+        Matcher matcher = pattern.matcher(search + ",");
+        matcher.find();
+        searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3));
+        OrderSpecification spec = new OrderSpecification(searchCriteria);
+        return orderRepository.findAll(spec, pageable).getContent();
     }
 
     public Order findById(Integer id) {

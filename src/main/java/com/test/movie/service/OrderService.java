@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
-    List<Order> findAllOrders(Map<String, String> map);
+    List<Order> findAllOrders(String search, Integer pageSize, Integer pageNumber);
     Order findById(Integer id);
     Order createOrder(OrderDto orderDto);
     Order updateOrder(OrderDto orderDto);

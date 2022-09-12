@@ -1,18 +1,20 @@
 package com.test.movie.service.impl;
 
+import com.test.movie.util.SearchCriteria;
 import com.test.movie.dto.MovieDto;
 import com.test.movie.model.Movie;
 import com.test.movie.exceptions.NotFoundException;
-import com.test.movie.repository.MovieRepository;
+import com.test.movie.dao.MovieRepository;
+import com.test.movie.dao.MovieSpecification;
 import com.test.movie.service.MovieService;
-import org.springframework.data.domain.Page;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -25,15 +27,23 @@ public class MovieServiceImpl implements MovieService {
 
     public Movie findById(int id) {
         return movieRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Entity with id: " + id + " not found"));
+            .orElseThrow(() -> new NotFoundException("Entity with id: " + id + " not found"));
     }
 
-    public List<Movie> findAllMovies(Map<String, String> map) {
-        Integer pageNumber = Integer.parseInt(map.get("pageNumber"));
-        Integer pageSize = Integer.parseInt(map.get("pageSize"));
+    @Override
+    public List<Movie> findAllMovies(String search, Integer pageNumber, Integer pageSize) {
         Pageable page = PageRequest.of(pageNumber, pageSize);
-        Page<Movie> movies = movieRepository.findAll(page);
-        return movies.getContent();
+        if (search == null) {
+            return movieRepository.findAll(page).getContent();
+        }
+
+        SearchCriteria searchCriteria;
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+        Matcher matcher = pattern.matcher(search + ",");
+        matcher.find();
+        searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3));
+        MovieSpecification spec = new MovieSpecification(searchCriteria);
+        return movieRepository.findAll(spec, page).getContent();
     }
 
     public Movie createMovie(MovieDto movieDto) {
@@ -54,7 +64,7 @@ public class MovieServiceImpl implements MovieService {
     @Transactional
     public Integer deleteMovie(Integer id) {
         Movie movie = movieRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Entity with id: " + id + " not found"));
+            .orElseThrow(() -> new NotFoundException("Entity with id: " + id + " not found"));
         movieRepository.delete(movie);
         return id;
     }
