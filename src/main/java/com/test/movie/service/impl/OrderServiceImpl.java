@@ -1,6 +1,5 @@
 package com.test.movie.service.impl;
 
-import com.test.movie.dao.MovieSpecification;
 import com.test.movie.dao.OrderSpecification;
 import com.test.movie.dto.OrderDto;
 import com.test.movie.exceptions.NotFoundException;
@@ -12,16 +11,12 @@ import com.test.movie.service.OrderService;
 import com.test.movie.util.SearchCriteria;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional

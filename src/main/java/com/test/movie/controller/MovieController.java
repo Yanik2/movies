@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/movies")
@@ -21,11 +20,6 @@ public class MovieController {
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
-
-//    @GetMapping
-//    public List<Movie> getMovies(@RequestParam Map<String, String> params) {
-//        return movieService.findAllMovies(params);
-//    }
 
     @GetMapping
     public List<Movie> getMovies(@RequestParam(required = false) String search,
